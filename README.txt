@@ -1,6 +1,7 @@
-Instructions if you haven't read it on GitHub.
+Instructions on how to use AutoFollow
 
 Requirements:
+Python installed.
 1920 x 1080p Monitor
 Oculus or Steam version of Hyper Dash.
 Alternate account that is friended
