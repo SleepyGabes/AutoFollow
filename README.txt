@@ -1,4 +1,7 @@
-Instructions on how to use AutoFollow
+# Instructions on how to use AutoFollow
+To able to use AutoFollow you will need the following:
+Python installed and its libraries.
+To install the dependencies open the autofollow folder and click the path and then type cmd and press enter.
 
 Requirements:
 Python installed.
