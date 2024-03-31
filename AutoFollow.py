@@ -13,6 +13,7 @@
 # ╚═╝░░╚═╝░╚═════╝░░░░╚═╝░░░░╚════╝░╚═╝░░░░░░╚════╝░╚══════╝╚══════╝░╚════╝░░░░╚═╝░░░╚═╝░
 
 # This program was written by SleepyGabes on GitHub!
+# Version 1.0.3
 # Contributors: Sirvoid, Rexac
 # You can find updates of the mod here!
 # ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
@@ -23,17 +24,97 @@
 
 import time
 import pyautogui
+import pygetwindow
+import pygetwindow as gw
 import pytesseract
 from PIL import Image
-pytesseract.pytesseract.tesseract_cmd = "Tesseract-OCR/tesseract.exe"
+import tkinter as tk
+import os
+pytesseract.pytesseract.tesseract_cmd = 'Tesseract-OCR/tesseract.exe'
+last_target = "last_target.txt"
+def write_file(file_name, content):
+    with open(file_name, 'w') as file:
+        file.write(content)
+    print(f"Content written to '{file_name}' successfully.")
+
+def read_file(file_name):
+    try:
+        with open(file_name, 'r') as file:
+            content = file.read()
+            return content
+    except FileNotFoundError:
+        print(f"File '{file_name}' not found.")
+        return None
 
 # Prompt the user to specify their target
-print("Welcome to AutoFollow!")
-target = input("Type the targets name: ")
+class MultipleChoiceWindow:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("AutoFollow")
+
+        self.question_label = tk.Label(master, text="What would you like to do?")
+        self.question_label.pack()
+
+        self.var = tk.StringVar()
+
+        self.radio_button1 = tk.Radiobutton(master, text="1. Set new target.", variable=self.var, value="1")
+        self.radio_button1.pack(anchor='w')
+
+        self.radio_button2 = tk.Radiobutton(master, text="2. Use previous target.", variable=self.var, value="2")
+        self.radio_button2.pack(anchor='w')
+
+        self.radio_button3 = tk.Radiobutton(master, text="3. Exit AutoFollow", variable=self.var, value="3")
+        self.radio_button3.pack(anchor='w')
+
+        self.submit_button = tk.Button(master, text="Submit", command=self.submit_answer)
+        self.submit_button.pack()
+
+    def submit_answer(self):
+        global target
+        global last_target
+        answer = self.var.get()
+        if answer == "1":
+            self.master.destroy()  # Close the main window
+            self.input_window = tk.Tk()  # Create a new window for input
+            self.input_window.title("Enter Target")
+            self.input_label = tk.Label(self.input_window, text="Enter the target's name:")
+            self.input_label.pack()
+            self.input_entry = tk.Entry(self.input_window)
+            self.input_entry.pack()
+            self.input_button = tk.Button(self.input_window, text="Submit", command=self.get_input)
+            target = read_file(last_target)
+            self.input_button.pack()
+        elif answer == "2":
+            target = read_file(last_target)
+            self.master.destroy()  # Close the main window
+            return target
+        elif answer == "3":
+            self.master.destroy()
+            exit()
+
+    def get_input(self):
+        global target
+        global last_target
+        target = self.input_entry.get()
+        write_file(last_target, target)
+        self.input_window.destroy()  # Close the input window
+
+def main():
+    root = tk.Tk()
+    app = MultipleChoiceWindow(root)
+    root.mainloop()
+main()
 
 # Switch to Hyper Dash
-print("Target selected. Please switch to Hyper Dash now. (5 seconds to switch)")
-print("To exit AutoFollow during spectating press 0.")
+def activate_window():
+    try:
+        windows = gw.getWindowsWithTitle("Hyper Dash")
+        for window in windows:
+            window.activate()
+            print("Switching to Hyper Dash")
+    except pygetwindow.PyGetWindowException:
+        taskbar = pyautogui.locateCenterOnScreen('images/HD.png', confidence=0.55)
+        pyautogui.click(taskbar)
 time.sleep(5)
 
 # Define slot regions
@@ -50,6 +131,26 @@ slot_regions = [
     (1702, 30, 131, 28)
 ]
 
+inlobby = False
+
+# Join Button
+def joinbutton():
+    global inlobby
+    try:
+        joinbutton = pyautogui.locateCenterOnScreen('images/join.png', confidence=0.75)
+        if joinbutton:
+            pyautogui.moveTo(630, 494)
+            pyautogui.click()
+            time.sleep(5)
+            print("Join button is available right now. Attempting to join lobby.")
+            time.sleep(4.5)
+            inlobby = True
+        else:
+            print("Join button not available right now.")
+            time.sleep(5)
+    except pyautogui.ImageNotFoundException:
+        print("Join button not found.")
+        time.sleep(3)
 
 # Save slot images
 def save_slot_images():
@@ -68,16 +169,17 @@ def read_text_from_image(image_path):
 
 # Function to check for player's name
 def check_for_player():
+    global inlobby
     # Player's name
     player_name = target  # Replace with the player's name you're looking for
 
-    # Start time for tracking 10 seconds
+    # Start time for tracking 5 seconds
     start_time = time.time()
 
     player_found = False  # Flag to indicate whether the player has been found
 
     # Loop through slots to check for player's name
-    while time.time() - start_time < 20:  # Check within 10 seconds
+    while time.time() - start_time < 5:  # Check within 5 seconds
         save_slot_images()
         # Loop through slots to check for player's name
         for i, region in enumerate(slot_regions, start=1):
@@ -88,32 +190,22 @@ def check_for_player():
                 print(f"Player found in slot {i}. Pressed key {i}.")
                 player_found = True
                 return  # Exit function if player found
-        time.sleep(10)  # Wait for 10 seconds before rechecking
+        time.sleep(5)  # Wait for 5 seconds before rechecking
 
-    # If player not found within 10 seconds
+    # If player not found within 5 seconds
     if not player_found:
-        print("Player not found within 10 seconds. Leaving lobby.")
+        print("Player not found within 5 seconds. Leaving lobby.")
         pyautogui.press("tab")
         pyautogui.moveTo(645, 318)
         pyautogui.click()
+        inlobby = False
 
         # Checking again in
         time.sleep(5)
 
 # Main loop
 while True:
-    try:
-        joinbutton = pyautogui.locateCenterOnScreen('images/join.png', confidence=0.75)
-        if joinbutton:
-            pyautogui.moveTo(630, 494)
-            pyautogui.click()
-            time.sleep(5)
-            print("Join button is available right now. Attempting to join lobby.")
-            time.sleep(4.5)
+        if inlobby:
             check_for_player()
-        else:
-            print("Join button not available right now.")
-            time.sleep(5)
-    except pyautogui.ImageNotFoundException:
-        print("Join button not found.")
-        time.sleep(5)
+        if not inlobby:
+            joinbutton()
