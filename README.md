@@ -4,6 +4,7 @@
 ## To able to use AutoFollow you will need the following:
 [Python](https://www.python.org/downloads/) installed and its libraries.
 To install the libraries open the AutoFollow folder and click the path and then type `cmd` and press enter.
+
 ![GIF](https://imgur.com/5hvgUGV.gif)
 
 ![Image](https://imgur.com/AxEZS9U.png)
