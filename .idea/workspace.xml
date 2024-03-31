@@ -5,20 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c1d82393-cae5-42b4-96ac-e242ca4d0dc5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/images/HD.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/last_target.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AutoFollow.py" beforeDir="false" afterPath="$PROJECT_DIR$/AutoFollow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/slot1.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot1.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/slot10.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot10.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/slot2.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/slot3.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot3.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/slot4.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot4.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/slot5.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot5.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/slot6.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot6.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/slot7.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot7.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/slot8.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot8.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/slot9.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot9.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
