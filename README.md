@@ -33,6 +33,8 @@ After all of them have successfully downloaded, copy the following:
 
 - Alternate account that is friended to your main account. (Preferably a brand new one with only your Main Account friended)
 > (Depending on platform your main account is, you will have to friend your main account with the alternative account you are using for AutoFollow.)
+>
+> (It is also advised that the alternate account is brand new and doesn't have any other people as friends as it could end up join other people's lobbies rather than yours.)
 > 
 > (Example: Main Oculus account must friend alternate Oculus account. Main Steam account must friend alternate Steam account.)
 
