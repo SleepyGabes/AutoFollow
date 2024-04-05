@@ -13,7 +13,7 @@
 # ╚═╝░░╚═╝░╚═════╝░░░░╚═╝░░░░╚════╝░╚═╝░░░░░░╚════╝░╚══════╝╚══════╝░╚════╝░░░░╚═╝░░░╚═╝░
 
 # This program was written by SleepyGabes on GitHub!
-# Version 1.0.3
+# Version 1.0.4
 # Contributors: Sirvoid, Rexac
 # Credit to mage/sage343 on Discord for the new logo!
 # You can find updates of the mod here!
@@ -134,7 +134,7 @@ def activate_window():
             window.activate()
             print("Switching to Hyper Dash")
     except pygetwindow.PyGetWindowException:
-        taskbar = pyautogui.locateCenterOnScreen('images/hd.png', confidence=0.55)
+        taskbar = pyautogui.locateCenterOnScreen('images/hd.png', confidence=0.85)
         pyautogui.click(taskbar)
 time.sleep(5)
 
@@ -159,7 +159,7 @@ inlobby = False
 def joinbutton():
     global inlobby
     try:
-        joinbutton = pyautogui.locateCenterOnScreen('images/join.png', confidence=0.75)
+        joinbutton = pyautogui.locateCenterOnScreen('images/join.png', confidence=0.85)
         if joinbutton:
             pyautogui.moveTo(630, 494)
             pyautogui.click()
@@ -190,19 +190,24 @@ def read_text_from_image(image_path):
     print(text) #Debugging purposes
     return text.strip()
 
+def leaving_lobby():
+    global inlobby
+    print("Player not found within 10 seconds. Leaving lobby.")
+    pyautogui.press("tab")
+    pyautogui.moveTo(645, 318)
+    pyautogui.click()
+    inlobby = False
+    # Checking again in
+    time.sleep(10)
+
 # Function to check for player's name
 def check_for_player():
     global inlobby
-    # Player's name
     player_name = target  # Replace with the player's name you're looking for
-
-    # Start time for tracking 5 seconds
-    start_time = time.time()
-
-    player_found = False  # Flag to indicate whether the player has been found
+    try_amount = 0
 
     # Loop through slots to check for player's name
-    while time.time() - start_time < 10:  # Check within 10 seconds
+    while try_amount < 3:  # New Condition
         save_slot_images()
         # Loop through slots to check for player's name
         for i, region in enumerate(slot_regions, start=1):
@@ -211,19 +216,16 @@ def check_for_player():
             if player_name in text:
                 pyautogui.press(str(i%10))
                 print(f"Player found in slot {i%10}. Pressed key {i%10}.")
-                player_found = True
                 return  # Exit function if player found
-        time.sleep(30)  # Wait for 5 seconds before rechecking
+            else:
+                try_amount += 1
+                # print(f"Trying {try_amount}.")
+        try_amount -= 9
+        time.sleep(10)  # Wait for 10 seconds before rechecking
 
     # If player not found within 10 seconds
-    if not player_found:
-        print("Player not found within 10 seconds. Leaving lobby.")
-        pyautogui.press("tab")
-        pyautogui.moveTo(645, 318)
-        pyautogui.click()
-        inlobby = False
-        # Checking again in
-        time.sleep(10)
+    if try_amount >= 3:
+        leaving_lobby()
 
 # Main loop
 while True:
