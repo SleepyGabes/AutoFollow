@@ -13,14 +13,15 @@
 # ╚═╝░░╚═╝░╚═════╝░░░░╚═╝░░░░╚════╝░╚═╝░░░░░░╚════╝░╚══════╝╚══════╝░╚════╝░░░░╚═╝░░░╚═╝░
 
 # This program was written by SleepyGabes on GitHub!
-# Version 1.0.3
+# Version 1.0.4
 # Contributors: Sirvoid, Rexac
+# Credit to mage/sage343 on Discord for the new logo!
 # You can find updates of the mod here!
 # ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 # GitHub: https://github.com/SleepyGabes
 # Discord Server: https://discord.gg/FFGukgu98K
 # Modify the mod to your liking, just make sure you put me in the credits as the original source!
-# Thank you, enjoy using AutoFollow!  PS: This is my first time coding a script, so excuse my "logical order, or if it doesn't make sense."
+# Thank you, enjoy using AutoFollow!  PS: This is my first time coding a script, so excuse my "logical order", or if it doesn't make sense.
 
 import time
 import pyautogui
@@ -29,13 +30,13 @@ import pygetwindow as gw
 import pytesseract
 from PIL import Image
 import tkinter as tk
-import os
+from tkinter import PhotoImage
 pytesseract.pytesseract.tesseract_cmd = 'Tesseract-OCR/tesseract.exe'
 last_target = "last_target.txt"
 def write_file(file_name, content):
     with open(file_name, 'w') as file:
         file.write(content)
-    print(f"Content written to '{file_name}' successfully.")
+    # print(f"Content written to '{file_name}' successfully.")
 
 def read_file(file_name):
     try:
@@ -51,20 +52,40 @@ class MultipleChoiceWindow:
     def __init__(self, master):
         self.master = master
         self.master.title("AutoFollow")
+        # Change window icon
+        try:
+            icon_path = "images/af16.ico" or "images/af32.ico" or "images/af48.ico" or "images/af64.ico" or "images/af128.ico" or "images/af256.ico"
+            self.master.iconbitmap(icon_path)
+        except tk.TclError as e:
+            print("Error setting window icon:", e)
 
+        # Load the image
+        image_path = "images/afimg.png"  # Update with your image file path
+        self.image = PhotoImage(file=image_path)
+
+        # Create a label widget to display the image
+        self.image_label = tk.Label(master, image=self.image)
+        self.image_label.pack()
+
+        self.question_label = tk.Label(master, text="Welcome to AutoFollow!")
+        self.question_label.pack()
         self.question_label = tk.Label(master, text="What would you like to do?")
         self.question_label.pack()
 
         self.var = tk.StringVar()
 
-        self.radio_button1 = tk.Radiobutton(master, text="1. Set new target.", variable=self.var, value="1")
+        self.radio_button1 = tk.Radiobutton(master, text="Set new target.", variable=self.var, value="1")
         self.radio_button1.pack(anchor='w')
+        self.var.set("1")
 
-        self.radio_button2 = tk.Radiobutton(master, text="2. Use previous target.", variable=self.var, value="2")
+        target = read_file(last_target)
+        self.radio_button2 = tk.Radiobutton(master, text="Use previous target. " + "(" + target + ")", variable=self.var, value="2")
         self.radio_button2.pack(anchor='w')
+        self.var.set("2")
 
-        self.radio_button3 = tk.Radiobutton(master, text="3. Exit AutoFollow", variable=self.var, value="3")
+        self.radio_button3 = tk.Radiobutton(master, text="Exit AutoFollow", variable=self.var, value="3")
         self.radio_button3.pack(anchor='w')
+        self.var.set("3")
 
         self.submit_button = tk.Button(master, text="Submit", command=self.submit_answer)
         self.submit_button.pack()
@@ -86,7 +107,7 @@ class MultipleChoiceWindow:
             self.input_button.pack()
         elif answer == "2":
             target = read_file(last_target)
-            self.master.destroy()  # Close the main window
+            self.master.destroy()
             return target
         elif answer == "3":
             self.master.destroy()
@@ -97,15 +118,15 @@ class MultipleChoiceWindow:
         global last_target
         target = self.input_entry.get()
         write_file(last_target, target)
-        self.input_window.destroy()  # Close the input window
 
 def main():
     root = tk.Tk()
     app = MultipleChoiceWindow(root)
+    root.geometry("280x280")
     root.mainloop()
 main()
 
-# Switch to Hyper Dash
+# Switching to Hyper Dash
 def activate_window():
     try:
         windows = gw.getWindowsWithTitle("Hyper Dash")
@@ -113,11 +134,11 @@ def activate_window():
             window.activate()
             print("Switching to Hyper Dash")
     except pygetwindow.PyGetWindowException:
-        taskbar = pyautogui.locateCenterOnScreen('images/HD.png', confidence=0.55)
+        taskbar = pyautogui.locateCenterOnScreen('images/hd.png', confidence=0.55)
         pyautogui.click(taskbar)
 time.sleep(5)
 
-# Define slot regions
+# Defined slot regions
 slot_regions = [
     (87, 30, 131, 28),
     (229, 30, 131, 28),
@@ -133,7 +154,7 @@ slot_regions = [
 
 inlobby = False
 
-# Join Button
+# Defined the join button
 def joinbutton():
     global inlobby
     try:
@@ -147,19 +168,19 @@ def joinbutton():
             inlobby = True
         else:
             print("Join button not available right now.")
-            time.sleep(5)
+            time.sleep(3)
     except pyautogui.ImageNotFoundException:
         print("Join button not found.")
         time.sleep(3)
 
-# Save slot images
+# Save the slot images
 def save_slot_images():
     for i, region in enumerate(slot_regions, start=1):
         slot_img = pyautogui.screenshot(region=region)
-        slot_img.save(f"images/slot{i}.png")
+        slot_img.save(f"images/slot{i%10}.png")
         # Convert to grayscale
         slot_img = slot_img.convert('L')
-        slot_img.save(f"images/slot{i}.png")
+        slot_img.save(f"images/slot{i%10}.png")
 
 # Function to read text from image using pytesseract
 def read_text_from_image(image_path):
@@ -179,18 +200,18 @@ def check_for_player():
     player_found = False  # Flag to indicate whether the player has been found
 
     # Loop through slots to check for player's name
-    while time.time() - start_time < 5:  # Check within 5 seconds
+    while time.time() - start_time < 10:  # Check within 5 seconds
         save_slot_images()
         # Loop through slots to check for player's name
         for i, region in enumerate(slot_regions, start=1):
-            image_path = f"images/slot{i}.png"
+            image_path = f"images/slot{i%10}.png"
             text = read_text_from_image(image_path)
             if player_name in text:
-                pyautogui.press(str(i))
-                print(f"Player found in slot {i}. Pressed key {i}.")
+                pyautogui.press(str(i%10))
+                print(f"Player found in slot {i%10}. Pressed key {i%10}.")
                 player_found = True
                 return  # Exit function if player found
-        time.sleep(5)  # Wait for 5 seconds before rechecking
+        time.sleep(30)  # Wait for 5 seconds before rechecking
 
     # If player not found within 5 seconds
     if not player_found:
@@ -199,7 +220,6 @@ def check_for_player():
         pyautogui.moveTo(645, 318)
         pyautogui.click()
         inlobby = False
-
         # Checking again in
         time.sleep(5)
 
