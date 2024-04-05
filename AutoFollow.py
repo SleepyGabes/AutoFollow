@@ -13,7 +13,7 @@
 # ╚═╝░░╚═╝░╚═════╝░░░░╚═╝░░░░╚════╝░╚═╝░░░░░░╚════╝░╚══════╝╚══════╝░╚════╝░░░░╚═╝░░░╚═╝░
 
 # This program was written by SleepyGabes on GitHub!
-# Version 1.0.4
+# Version 1.0.3
 # Contributors: Sirvoid, Rexac
 # Credit to mage/sage343 on Discord for the new logo!
 # You can find updates of the mod here!
