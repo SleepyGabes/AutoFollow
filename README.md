@@ -1,4 +1,4 @@
-![Image](https://imgur.com/Zfimpjx.png)
+![Image](https://imgur.com/zRomQ6G.png)
 
 # Instructions on how to use AutoFollow
 ## To able to use AutoFollow you will need the following:
