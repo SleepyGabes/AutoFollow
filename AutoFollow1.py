@@ -152,6 +152,7 @@ slot_regions = [
     (1702, 30, 131, 28)
 ]
 
+# Beginning statement so that it doesn't automatically check for players at the top.
 inlobby = False
 
 # Defined the join button
@@ -164,7 +165,7 @@ def joinbutton():
             pyautogui.click()
             time.sleep(5)
             print("Join button is available right now. Attempting to join lobby.")
-            time.sleep(4.5)
+            time.sleep(4)
             inlobby = True
         else:
             print("Join button not available right now.")
@@ -186,6 +187,7 @@ def save_slot_images():
 def read_text_from_image(image_path):
     image = Image.open(image_path)
     text = pytesseract.image_to_string(image)
+    print(text) #Debugging purposes
     return text.strip()
 
 # Function to check for player's name
@@ -200,7 +202,7 @@ def check_for_player():
     player_found = False  # Flag to indicate whether the player has been found
 
     # Loop through slots to check for player's name
-    while time.time() - start_time < 10:  # Check within 5 seconds
+    while time.time() - start_time < 10:  # Check within 10 seconds
         save_slot_images()
         # Loop through slots to check for player's name
         for i, region in enumerate(slot_regions, start=1):
@@ -213,15 +215,15 @@ def check_for_player():
                 return  # Exit function if player found
         time.sleep(30)  # Wait for 5 seconds before rechecking
 
-    # If player not found within 5 seconds
+    # If player not found within 10 seconds
     if not player_found:
-        print("Player not found within 5 seconds. Leaving lobby.")
+        print("Player not found within 10 seconds. Leaving lobby.")
         pyautogui.press("tab")
         pyautogui.moveTo(645, 318)
         pyautogui.click()
         inlobby = False
         # Checking again in
-        time.sleep(5)
+        time.sleep(10)
 
 # Main loop
 while True:
