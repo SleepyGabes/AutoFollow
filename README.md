@@ -21,7 +21,7 @@ Once you have entered the Command Prompt, copy the following and wait for them t
 
 
 After all of them have successfully downloaded, copy the following:
-'Python AutoFollow.py', this will execute the script.
+`Python AutoFollow.py`, this will execute the script.
 
 ### Requirements for the script to work correctly:
 
