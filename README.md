@@ -1,7 +1,7 @@
 ![Image](https://imgur.com/zRomQ6G.png)
 
-# Instructions on how to use AutoFollow
-## To able to use AutoFollow you will need the following:
+# Instructions on how to install AutoFollow and it's requirements
+## To able to install & use AutoFollow you will need the following:
 [Python](https://www.python.org/downloads/) installed and its libraries.
 To install the libraries open the AutoFollow folder and click the path and then type `cmd` and press enter.
 
@@ -41,9 +41,7 @@ After all of them have successfully downloaded, copy the following:
 
 # Spectator Settings
 
-Spectator UI = true
+- Spectator UI = true
 
-Camera FOV: 90
-
-Follow on kill = false
+- Follow on kill = false
 
