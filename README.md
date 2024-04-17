@@ -1,6 +1,6 @@
 ![Image](https://imgur.com/zRomQ6G.png)
 
-# Instructions on how to install AutoFollow and it's requirements
+# Instructions on how to install AutoFollow & Requirements
 ## To able to install & use AutoFollow you will need the following:
 [Python](https://www.python.org/downloads/) installed and its libraries.
 To install the libraries open the AutoFollow folder and click the path and then type `cmd` and press enter.
