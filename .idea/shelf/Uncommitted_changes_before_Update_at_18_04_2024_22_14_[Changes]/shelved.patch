@@ -1,0 +1,257 @@
+Index: AutoFollow.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># ░██╗░░░░░░░██╗███████╗██╗░░░░░░█████╗░░█████╗░███╗░░░███╗███████╗        ████████╗░█████╗░\r\n# ░██║░░██╗░░██║██╔════╝██║░░░░░██╔══██╗██╔══██╗████╗░████║██╔════╝        ╚══██╔══╝██╔══██╗\r\n# ░╚██╗████╗██╔╝█████╗░░██║░░░░░██║░░╚═╝██║░░██║██╔████╔██║█████╗░░        ░░░██║░░░██║░░██║\r\n# ░░████╔═████║░██╔══╝░░██║░░░░░██║░░██╗██║░░██║██║╚██╔╝██║██╔══╝░░        ░░░██║░░░██║░░██║\r\n# ░░╚██╔╝░╚██╔╝░███████╗███████╗╚█████╔╝╚█████╔╝██║░╚═╝░██║███████╗        ░░░██║░░░╚█████╔╝\r\n# ░░░╚═╝░░░╚═╝░░╚══════╝╚══════╝░╚════╝░░╚════╝░╚═╝░░░░░╚═╝╚══════╝        ░░░╚═╝░░░░╚════╝░\r\n#\r\n# ░█████╗░██╗░░░██╗████████╗░█████╗░███████╗░█████╗░██╗░░░░░██╗░░░░░░█████╗░░██╗░░░░░░░██╗\r\n# ██╔══██╗██║░░░██║╚══██╔══╝██╔══██╗██╔════╝██╔══██╗██║░░░░░██║░░░░░██╔══██╗░██║░░██╗░░██║\r\n# ███████║██║░░░██║░░░██║░░░██║░░██║█████╗░░██║░░██║██║░░░░░██║░░░░░██║░░██║░╚██╗████╗██╔╝\r\n# ██╔══██║██║░░░██║░░░██║░░░██║░░██║██╔══╝░░██║░░██║██║░░░░░██║░░░░░██║░░██║░░████╔═████║░\r\n# ██║░░██║╚██████╔╝░░░██║░░░╚█████╔╝██║░░░░░╚█████╔╝███████╗███████╗╚█████╔╝░░╚██╔╝░╚██╔╝░\r\n# ╚═╝░░╚═╝░╚═════╝░░░░╚═╝░░░░╚════╝░╚═╝░░░░░░╚════╝░╚══════╝╚══════╝░╚════╝░░░░╚═╝░░░╚═╝░\r\n\r\n# This program was written by SleepyGabes on GitHub!\r\n# Version 1.0.4\r\n# Contributors: Sirvoid, Rexac\r\n# Credit to mage/sage343 on Discord for the new logo!\r\n# You can find updates of the mod here!\r\n# ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓\r\n# GitHub: https://github.com/SleepyGabes\r\n# Discord Server: https://discord.gg/FFGukgu98K\r\n# Modify the mod to your liking, just make sure you put me in the credits as the original source!\r\n# Thank you, enjoy using AutoFollow!  PS: This is my first time coding a script, so excuse my \"logical order\", or if it doesn't make sense.\r\n\r\nimport time\r\nimport pyautogui\r\nimport pygetwindow\r\nimport pygetwindow as gw\r\nimport pytesseract\r\nfrom PIL import Image\r\nimport tkinter as tk\r\nfrom tkinter import PhotoImage\r\npytesseract.pytesseract.tesseract_cmd = 'Tesseract-OCR/tesseract.exe'\r\nlast_target = \"last_target.txt\"\r\ndef write_file(file_name, content):\r\n    with open(file_name, 'w') as file:\r\n        file.write(content)\r\n    # print(f\"Content written to '{file_name}' successfully.\")\r\n\r\ndef read_file(file_name):\r\n    try:\r\n        with open(file_name, 'r') as file:\r\n            content = file.read()\r\n            return content\r\n    except FileNotFoundError:\r\n        print(f\"File '{file_name}' not found.\")\r\n        return None\r\n\r\n# Prompt the user to specify their target\r\nclass MultipleChoiceWindow:\r\n    def __init__(self, master):\r\n        self.master = master\r\n        self.master.title(\"AutoFollow\")\r\n        # Change window icon\r\n        try:\r\n            icon_path = \"images/af16.ico\" or \"images/af32.ico\" or \"images/af48.ico\" or \"images/af64.ico\" or \"images/af128.ico\" or \"images/af256.ico\"\r\n            self.master.iconbitmap(icon_path)\r\n        except tk.TclError as e:\r\n            print(\"Error setting window icon:\", e)\r\n\r\n        # Load the image\r\n        image_path = \"images/afimg.png\"  # Update with your image file path\r\n        self.image = PhotoImage(file=image_path)\r\n\r\n        # Create a label widget to display the image\r\n        self.image_label = tk.Label(master, image=self.image)\r\n        self.image_label.pack()\r\n\r\n        self.question_label = tk.Label(master, text=\"Welcome to AutoFollow!\")\r\n        self.question_label.pack()\r\n        self.question_label = tk.Label(master, text=\"What would you like to do?\")\r\n        self.question_label.pack()\r\n\r\n        self.var = tk.StringVar()\r\n\r\n        self.radio_button1 = tk.Radiobutton(master, text=\"Set new target.\", variable=self.var, value=\"1\")\r\n        self.radio_button1.pack(anchor='w')\r\n        self.var.set(\"1\")\r\n\r\n        target = read_file(last_target)\r\n        self.radio_button2 = tk.Radiobutton(master, text=\"Use previous target. \" + \"(\" + target + \")\", variable=self.var, value=\"2\")\r\n        self.radio_button2.pack(anchor='w')\r\n        self.var.set(\"2\")\r\n\r\n        self.radio_button3 = tk.Radiobutton(master, text=\"Exit AutoFollow\", variable=self.var, value=\"3\")\r\n        self.radio_button3.pack(anchor='w')\r\n        self.var.set(\"3\")\r\n\r\n        self.submit_button = tk.Button(master, text=\"Submit\", command=self.submit_answer)\r\n        self.submit_button.pack()\r\n\r\n    def submit_answer(self):\r\n        global target\r\n        global last_target\r\n        answer = self.var.get()\r\n        if answer == \"1\":\r\n            self.master.destroy()  # Close the main window\r\n            self.input_window = tk.Tk()  # Create a new window for input\r\n            self.input_window.title(\"Enter Target\")\r\n            self.input_label = tk.Label(self.input_window, text=\"Enter the target's name:\")\r\n            self.input_label.pack()\r\n            self.input_entry = tk.Entry(self.input_window)\r\n            self.input_entry.pack()\r\n            self.input_button = tk.Button(self.input_window, text=\"Submit\", command=self.get_input)\r\n            target = read_file(last_target)\r\n            self.input_button.pack()\r\n        elif answer == \"2\":\r\n            target = read_file(last_target)\r\n            self.master.destroy()\r\n            return target\r\n        elif answer == \"3\":\r\n            self.master.destroy()\r\n            exit()\r\n\r\n    def get_input(self):\r\n        global target\r\n        global last_target\r\n        target = self.input_entry.get()\r\n        write_file(last_target, target)\r\n\r\ndef main():\r\n    root = tk.Tk()\r\n    app = MultipleChoiceWindow(root)\r\n    root.geometry(\"280x280\")\r\n    root.mainloop()\r\nmain()\r\n\r\n# Switching to Hyper Dash\r\ndef activate_window():\r\n    try:\r\n        windows = gw.getWindowsWithTitle(\"Hyper Dash\")\r\n        for window in windows:\r\n            window.activate()\r\n            print(\"Switching to Hyper Dash\")\r\n    except pygetwindow.PyGetWindowException:\r\n        taskbar = pyautogui.locateCenterOnScreen('images/hd.png', confidence=0.85)\r\n        pyautogui.click(taskbar)\r\ntime.sleep(5)\r\n\r\n# Defined slot regions\r\nslot_regions = [\r\n    (87, 30, 131, 28),\r\n    (229, 30, 131, 28),\r\n    (371, 30, 131, 28),\r\n    (513, 30, 131, 28),\r\n    (655, 30, 131, 28),\r\n    (1134, 30, 131, 28),\r\n    (1276, 30, 131, 28),\r\n    (1418, 30, 131, 28),\r\n    (1560, 30, 131, 28),\r\n    (1702, 30, 131, 28)\r\n]\r\n\r\n# Beginning statement so that it doesn't automatically check for players at the top.\r\ninlobby = False\r\n\r\n# Defined the join button\r\ndef joinbutton():\r\n    global inlobby\r\n    try:\r\n        joinbutton = pyautogui.locateCenterOnScreen('images/join.png', confidence=0.85)\r\n        if joinbutton:\r\n            pyautogui.moveTo(630, 494)\r\n            pyautogui.click()\r\n            time.sleep(5)\r\n            print(\"Join button is available right now. Attempting to join lobby.\")\r\n            time.sleep(4)\r\n            inlobby = True\r\n        else:\r\n            print(\"Join button not available right now.\")\r\n            time.sleep(3)\r\n    except pyautogui.ImageNotFoundException:\r\n        print(\"Join button not found.\")\r\n        time.sleep(3)\r\n\r\n# Save the slot images\r\ndef save_slot_images():\r\n    for i, region in enumerate(slot_regions, start=1):\r\n        slot_img = pyautogui.screenshot(region=region)\r\n        slot_img.save(f\"images/slot{i%10}.png\")\r\n        # Convert to grayscale\r\n        slot_img = slot_img.convert('L')\r\n        slot_img.save(f\"images/slot{i%10}.png\")\r\n\r\n# Function to read text from image using pytesseract\r\ndef read_text_from_image(image_path):\r\n    image = Image.open(image_path)\r\n    text = pytesseract.image_to_string(image)\r\n    print(text) #Debugging purposes\r\n    return text.strip()\r\n\r\ndef leaving_lobby():\r\n    global inlobby\r\n    print(\"Player not found within 10 seconds. Leaving lobby.\")\r\n    pyautogui.press(\"tab\")\r\n    pyautogui.moveTo(645, 318)\r\n    pyautogui.click()\r\n    inlobby = False\r\n    # Checking again in\r\n    time.sleep(10)\r\n\r\n# Function to check for player's name\r\ndef check_for_player():\r\n    global inlobby\r\n    player_name = target  # Replace with the player's name you're looking for\r\n    try_amount = 0\r\n\r\n    # Loop through slots to check for player's name\r\n    while try_amount < 3:  # New Condition\r\n        save_slot_images()\r\n        # Loop through slots to check for player's name\r\n        for i, region in enumerate(slot_regions, start=1):\r\n            image_path = f\"images/slot{i%10}.png\"\r\n            text = read_text_from_image(image_path)\r\n            if player_name in text:\r\n                pyautogui.press(str(i%10))\r\n                print(f\"Player found in slot {i%10}. Pressed key {i%10}.\")\r\n                return  # Exit function if player found\r\n            else:\r\n                try_amount += 1\r\n                # print(f\"Trying {try_amount}.\")\r\n        try_amount -= 9\r\n        time.sleep(10)  # Wait for 10 seconds before rechecking\r\n\r\n    # If player not found within 10 seconds\r\n    if try_amount >= 3:\r\n        leaving_lobby()\r\n\r\n# Main loop\r\nwhile True:\r\n        if inlobby:\r\n            check_for_player()\r\n        if not inlobby:\r\n            joinbutton()\r\n
+===================================================================
+diff --git a/AutoFollow.py b/AutoFollow.py
+--- a/AutoFollow.py	
++++ b/AutoFollow.py	
+@@ -13,7 +13,7 @@
+ # ╚═╝░░╚═╝░╚═════╝░░░░╚═╝░░░░╚════╝░╚═╝░░░░░░╚════╝░╚══════╝╚══════╝░╚════╝░░░░╚═╝░░░╚═╝░
+ 
+ # This program was written by SleepyGabes on GitHub!
+-# Version 1.0.4
++# Version 1.0.5
+ # Contributors: Sirvoid, Rexac
+ # Credit to mage/sage343 on Discord for the new logo!
+ # You can find updates of the mod here!
+@@ -21,7 +21,8 @@
+ # GitHub: https://github.com/SleepyGabes
+ # Discord Server: https://discord.gg/FFGukgu98K
+ # Modify the mod to your liking, just make sure you put me in the credits as the original source!
+-# Thank you, enjoy using AutoFollow!  PS: This is my first time coding a script, so excuse my "logical order", or if it doesn't make sense.
++# Thank you, enjoy using AutoFollow!
++# PS: This is my first time coding a script, so excuse my "logical order", or if it doesn't make sense.
+ 
+ import time
+ import pyautogui
+@@ -31,13 +32,17 @@
+ from PIL import Image
+ import tkinter as tk
+ from tkinter import PhotoImage
++
+ pytesseract.pytesseract.tesseract_cmd = 'Tesseract-OCR/tesseract.exe'
+ last_target = "last_target.txt"
++
++
+ def write_file(file_name, content):
+     with open(file_name, 'w') as file:
+         file.write(content)
+     # print(f"Content written to '{file_name}' successfully.")
+ 
++
+ def read_file(file_name):
+     try:
+         with open(file_name, 'r') as file:
+@@ -47,20 +52,21 @@
+         print(f"File '{file_name}' not found.")
+         return None
+ 
++
+ # Prompt the user to specify their target
+ class MultipleChoiceWindow:
+     def __init__(self, master):
+         self.master = master
+         self.master.title("AutoFollow")
+-        # Change window icon
++        # Changes the window icon
+         try:
+-            icon_path = "images/af16.ico" or "images/af32.ico" or "images/af48.ico" or "images/af64.ico" or "images/af128.ico" or "images/af256.ico"
++            icon_path = "images/af.ico"
+             self.master.iconbitmap(icon_path)
+         except tk.TclError as e:
+             print("Error setting window icon:", e)
+ 
+         # Load the image
+-        image_path = "images/afimg.png"  # Update with your image file path
++        image_path = "images/afimg.png"
+         self.image = PhotoImage(file=image_path)
+ 
+         # Create a label widget to display the image
+@@ -79,7 +85,8 @@
+         self.var.set("1")
+ 
+         target = read_file(last_target)
+-        self.radio_button2 = tk.Radiobutton(master, text="Use previous target. " + "(" + target + ")", variable=self.var, value="2")
++        self.radio_button2 = tk.Radiobutton(master, text="Use previous target. " + "(" + target + ")",
++                                            variable=self.var, value="2")
+         self.radio_button2.pack(anchor='w')
+         self.var.set("2")
+ 
+@@ -95,8 +102,8 @@
+         global last_target
+         answer = self.var.get()
+         if answer == "1":
+-            self.master.destroy()  # Close the main window
+-            self.input_window = tk.Tk()  # Create a new window for input
++            self.master.destroy()
++            self.input_window = tk.Tk()
+             self.input_window.title("Enter Target")
+             self.input_label = tk.Label(self.input_window, text="Enter the target's name:")
+             self.input_label.pack()
+@@ -119,6 +126,7 @@
+         target = self.input_entry.get()
+         write_file(last_target, target)
+ 
++
+ def main():
+     root = tk.Tk()
+     app = MultipleChoiceWindow(root)
+@@ -126,6 +134,7 @@
+     root.mainloop()
+ main()
+ 
++
+ # Switching to Hyper Dash
+ def activate_window():
+     try:
+@@ -136,6 +145,8 @@
+     except pygetwindow.PyGetWindowException:
+         taskbar = pyautogui.locateCenterOnScreen('images/hd.png', confidence=0.85)
+         pyautogui.click(taskbar)
++
++
+ time.sleep(5)
+ 
+ # Defined slot regions
+@@ -155,6 +166,7 @@
+ # Beginning statement so that it doesn't automatically check for players at the top.
+ inlobby = False
+ 
++
+ # Defined the join button
+ def joinbutton():
+     global inlobby
+@@ -174,22 +186,25 @@
+         print("Join button not found.")
+         time.sleep(3)
+ 
++
+ # Save the slot images
+ def save_slot_images():
+     for i, region in enumerate(slot_regions, start=1):
+         slot_img = pyautogui.screenshot(region=region)
+-        slot_img.save(f"images/slot{i%10}.png")
++        slot_img.save(f"images/slot{i % 10}.png")
+         # Convert to grayscale
+         slot_img = slot_img.convert('L')
+-        slot_img.save(f"images/slot{i%10}.png")
++        slot_img.save(f"images/slot{i % 10}.png")
+ 
++
+ # Function to read text from image using pytesseract
+ def read_text_from_image(image_path):
+     image = Image.open(image_path)
+     text = pytesseract.image_to_string(image)
+-    print(text) #Debugging purposes
++    print(text)  # Debugging purposes
+     return text.strip()
+ 
++
+ def leaving_lobby():
+     global inlobby
+     print("Player not found within 10 seconds. Leaving lobby.")
+@@ -200,6 +215,7 @@
+     # Checking again in
+     time.sleep(10)
+ 
++
+ # Function to check for player's name
+ def check_for_player():
+     global inlobby
+@@ -211,11 +227,11 @@
+         save_slot_images()
+         # Loop through slots to check for player's name
+         for i, region in enumerate(slot_regions, start=1):
+-            image_path = f"images/slot{i%10}.png"
++            image_path = f"images/slot{i % 10}.png"
+             text = read_text_from_image(image_path)
+             if player_name in text:
+-                pyautogui.press(str(i%10))
+-                print(f"Player found in slot {i%10}. Pressed key {i%10}.")
++                pyautogui.press(str(i % 10))
++                print(f"Player found in slot {i % 10}. Pressed key {i % 10}.")
+                 return  # Exit function if player found
+             else:
+                 try_amount += 1
+@@ -227,9 +243,10 @@
+     if try_amount >= 3:
+         leaving_lobby()
+ 
++
+ # Main loop
+ while True:
+-        if inlobby:
+-            check_for_player()
+-        if not inlobby:
+-            joinbutton()
++    if inlobby:
++        check_for_player()
++    if not inlobby:
++        joinbutton()
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"471ff4a3-b5f0-4751-9129-2036dc668f1b\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/AutoFollow.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/AutoFollow.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/images/slot1.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/images/slot1.png\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/images/slot2.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/images/slot2.png\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/images/slot3.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/images/slot3.png\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/images/slot4.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/images/slot4.png\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/images/slot5.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/images/slot5.png\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/images/slot6.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/images/slot6.png\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/images/slot7.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/images/slot7.png\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/images/slot8.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/images/slot8.png\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/images/slot9.png\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/images/slot9.png\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"MarkdownSettingsMigration\">\r\n    <option name=\"stateVersion\" value=\"1\" />\r\n  </component>\r\n  <component name=\"ProblemsViewState\">\r\n    <hideBySeverity>\r\n      <option value=\"11\" />\r\n      <option value=\"12\" />\r\n      <option value=\"13\" />\r\n      <option value=\"14\" />\r\n      <option value=\"15\" />\r\n      <option value=\"16\" />\r\n      <option value=\"100\" />\r\n      <option value=\"200\" />\r\n    </hideBySeverity>\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;customColor&quot;: &quot;&quot;,\r\n  &quot;associatedIndex&quot;: 3\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2eh1vIDacAuPI2M7SgRDOBOl2cF\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"Python.AutoFollow.executor\": \"Run\",\r\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"git-widget-placeholder\": \"master\"\r\n  }\r\n}]]></component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-python-sdk-09665e90c3a7-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.15026.15\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"471ff4a3-b5f0-4751-9129-2036dc668f1b\" name=\"Changes\" comment=\"\" />\r\n      <created>1712342226594</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1712342226594</updated>\r\n    </task>\r\n    <servers />\r\n  </component>\r\n</project>
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	
++++ b/.idea/workspace.xml	
+@@ -5,16 +5,15 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="471ff4a3-b5f0-4751-9129-2036dc668f1b" name="Changes" comment="">
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/AutoFollow.py" beforeDir="false" afterPath="$PROJECT_DIR$/AutoFollow.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/images/slot1.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot1.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/images/slot2.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot2.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/images/slot3.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot3.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/images/slot4.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot4.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/images/slot5.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot5.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/images/slot6.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot6.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/images/slot7.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot7.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/images/slot8.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot8.png" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/images/slot9.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slot9.png" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/images/af128.ico" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/images/af16.ico" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/images/af256.ico" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/images/af32.ico" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/images/af48.ico" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/images/af64.ico" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/last_target.txt" beforeDir="false" afterPath="$PROJECT_DIR$/last_target.txt" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -48,14 +47,14 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent"><![CDATA[{
+-  "keyToString": {
+-    "Python.AutoFollow.executor": "Run",
+-    "RunOnceActivity.OpenProjectViewOnStart": "true",
+-    "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "git-widget-placeholder": "master"
++  <component name="PropertiesComponent">{
++  &quot;keyToString&quot;: {
++    &quot;Python.AutoFollow.executor&quot;: &quot;Run&quot;,
++    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
++    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
++    &quot;git-widget-placeholder&quot;: &quot;master&quot;
+   }
+-}]]></component>
++}</component>
+   <component name="SharedIndexes">
+     <attachedChunks>
+       <set>
+Index: last_target.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>Musashi
+===================================================================
+diff --git a/last_target.txt b/last_target.txt
+--- a/last_target.txt	
++++ b/last_target.txt	
+@@ -1,1 +1,0 @@
+-Musashi
+\ No newline at end of file
