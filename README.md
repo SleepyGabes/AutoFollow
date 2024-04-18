@@ -42,6 +42,7 @@ After all of them have successfully downloaded, copy the following:
 
 
 # Spectator Settings
+- FOV = 90
 
 - Spectator UI = true
 
