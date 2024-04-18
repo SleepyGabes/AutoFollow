@@ -1,4 +1,6 @@
 ![Image](https://imgur.com/zRomQ6G.png)
+# Looking for our Discord Server?
+https://discord.gg/FFGukgu98K
 
 # Instructions on how to install AutoFollow & Requirements
 ## To able to install & use AutoFollow you will need the following:
