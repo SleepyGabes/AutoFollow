@@ -13,9 +13,10 @@
 # ╚═╝░░╚═╝░╚═════╝░░░░╚═╝░░░░╚════╝░╚═╝░░░░░░╚════╝░╚══════╝╚══════╝░╚════╝░░░░╚═╝░░░╚═╝░
 
 # This program was written by SleepyGabes on GitHub!
-# Version 1.0.4a
+# Version 1.0.5
 # Contributors: Sirvoid, Rexac
 # Credit to mage/sage343 on Discord for the new logo!
+# Credits for troubleshooting to Outsider
 # You can find updates of the mod here!
 # ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 # GitHub: https://github.com/SleepyGabes
@@ -32,12 +33,17 @@ import pytesseract
 from PIL import Image
 import tkinter as tk
 from tkinter import PhotoImage
-pytesseract.pytesseract.tesseract_cmd = 'Tesseract-OCR/tesseract.exe'
-last_target = "last_target.txt"
+from sys import exit
+
+pytesseract.pytesseract.tesseract_cmd = '_internal/Tesseract-OCR/tesseract.exe'
+last_target = "_internal/last_target.txt"
+
+
 def write_file(file_name, content):
     with open(file_name, 'w') as file:
         file.write(content)
     # print(f"Content written to '{file_name}' successfully.")
+
 
 def read_file(file_name):
     try:
@@ -48,6 +54,7 @@ def read_file(file_name):
         print(f"File '{file_name}' not found.")
         return None
 
+
 # Prompt the user to specify their target
 class MultipleChoiceWindow:
     def __init__(self, master):
@@ -55,11 +62,10 @@ class MultipleChoiceWindow:
         self.master.title("AutoFollow")
 
         # Change window icon
-        icon_path = "images/af.ico"
-        self.master.iconbitmap(icon_path)
+        self.master.iconbitmap("_internal/images/af.ico")
 
         # Load the image
-        image_path = "images/afimg.png"  # Update with your image file path
+        image_path = "_internal/images/afimg.png"  # Update with your image file path
         self.image = PhotoImage(file=image_path)
 
         # Create a label widget to display the image
@@ -118,12 +124,16 @@ class MultipleChoiceWindow:
         target = self.input_entry.get()
         write_file(last_target, target)
 
+
 def main():
     root = tk.Tk()
     app = MultipleChoiceWindow(root)
     root.geometry("280x280")
     root.mainloop()
+
+
 main()
+
 
 # Switching to Hyper Dash
 def activate_window():
@@ -133,8 +143,10 @@ def activate_window():
             window.activate()
             print("Switching to Hyper Dash")
     except pygetwindow.PyGetWindowException:
-        taskbar = pyautogui.locateCenterOnScreen('images/hd.png', confidence=0.85)
+        taskbar = pyautogui.locateCenterOnScreen('_internal/images/hd.png', confidence=0.85)
         pyautogui.click(taskbar)
+
+
 time.sleep(5)
 
 # Defined slot regions
@@ -154,11 +166,12 @@ slot_regions = [
 # Beginning statement so that it doesn't automatically check for players at the top.
 inlobby = False
 
+
 # Defined the join button
 def joinbutton():
     global inlobby
     try:
-        joinbutton = pyautogui.locateCenterOnScreen('images/join.png', confidence=0.85)
+        joinbutton = pyautogui.locateCenterOnScreen('_internal/images/join.png', confidence=0.85)
         if joinbutton:
             pyautogui.moveTo(630, 494)
             pyautogui.click()
@@ -173,21 +186,24 @@ def joinbutton():
         print("Join button not found.")
         time.sleep(3)
 
+
 # Save the slot images
 def save_slot_images():
     for i, region in enumerate(slot_regions, start=1):
         slot_img = pyautogui.screenshot(region=region)
-        slot_img.save(f"images/slot{i%10}.png")
+        slot_img.save(f"_internal/images/slot{i % 10}.png")
         # Convert to grayscale
         slot_img = slot_img.convert('L')
-        slot_img.save(f"images/slot{i%10}.png")
+        slot_img.save(f"_internal/images/slot{i % 10}.png")
+
 
 # Function to read text from image using pytesseract
 def read_text_from_image(image_path):
     image = Image.open(image_path)
     text = pytesseract.image_to_string(image)
-    print(text) #Debugging purposes
+    print(text)  # Debugging purposes
     return text.strip()
+
 
 # Function to leave the lobby
 def leaving_lobby():
@@ -200,6 +216,7 @@ def leaving_lobby():
     # Checking again in
     time.sleep(10)
 
+
 # Function to check for player's name
 def check_for_player():
     global inlobby
@@ -211,11 +228,11 @@ def check_for_player():
         save_slot_images()
         # Loop through slots to check for player's name
         for i, region in enumerate(slot_regions, start=1):
-            image_path = f"images/slot{i%10}.png"
+            image_path = f"_internal/images/slot{i % 10}.png"
             text = read_text_from_image(image_path)
             if player_name in text:
-                pyautogui.press(str(i%10))
-                print(f"Player found in slot {i%10}. Pressed key {i%10}.")
+                pyautogui.press(str(i % 10))
+                print(f"Player found in slot {i % 10}. Pressed key {i % 10}.")
                 return  # Exit function if player found
             else:
                 try_amount += 1
@@ -227,9 +244,10 @@ def check_for_player():
     if try_amount >= 3:
         leaving_lobby()
 
-# Main loop
+
+# Main loop for the script
 while True:
-        if inlobby:
-            check_for_player()
-        if not inlobby:
-            joinbutton()
+    if inlobby:
+        check_for_player()
+    if not inlobby:
+        joinbutton()
