@@ -37,6 +37,22 @@ from sys import exit
 
 pytesseract.pytesseract.tesseract_cmd = '_internal/Tesseract-OCR/tesseract.exe'
 last_target = "_internal/last_target.txt"
+# Defined slot regions
+slot_regions = [
+    (87, 30, 131, 28),
+    (229, 30, 131, 28),
+    (371, 30, 131, 28),
+    (513, 30, 131, 28),
+    (655, 30, 131, 28),
+    (1134, 30, 131, 28),
+    (1276, 30, 131, 28),
+    (1418, 30, 131, 28),
+    (1560, 30, 131, 28),
+    (1702, 30, 131, 28)
+]
+
+# Beginning statement so that it doesn't automatically check for players at the top.
+inlobby = False
 
 
 def write_file(file_name, content):
@@ -125,15 +141,6 @@ class MultipleChoiceWindow:
         write_file(last_target, target)
 
 
-def main():
-    root = tk.Tk()
-    app = MultipleChoiceWindow(root)
-    root.geometry("280x280")
-    root.mainloop()
-
-
-main()
-
 
 # Switching to Hyper Dash
 def activate_window():
@@ -145,26 +152,6 @@ def activate_window():
     except pygetwindow.PyGetWindowException:
         taskbar = pyautogui.locateCenterOnScreen('_internal/images/hd.png', confidence=0.85)
         pyautogui.click(taskbar)
-
-
-time.sleep(5)
-
-# Defined slot regions
-slot_regions = [
-    (87, 30, 131, 28),
-    (229, 30, 131, 28),
-    (371, 30, 131, 28),
-    (513, 30, 131, 28),
-    (655, 30, 131, 28),
-    (1134, 30, 131, 28),
-    (1276, 30, 131, 28),
-    (1418, 30, 131, 28),
-    (1560, 30, 131, 28),
-    (1702, 30, 131, 28)
-]
-
-# Beginning statement so that it doesn't automatically check for players at the top.
-inlobby = False
 
 
 # Defined the join button
@@ -245,9 +232,19 @@ def check_for_player():
         leaving_lobby()
 
 
-# Main loop for the script
-while True:
-    if inlobby:
-        check_for_player()
-    if not inlobby:
-        joinbutton()
+def main():
+    root = tk.Tk()
+    app = MultipleChoiceWindow(root)
+    root.geometry("280x280")
+    root.mainloop()
+    time.sleep(5)
+    # Main loop for the script
+    while True:
+        if inlobby:
+            check_for_player()
+        if not inlobby:
+            joinbutton()
+
+
+if __name__ == "__main__":
+    main()
