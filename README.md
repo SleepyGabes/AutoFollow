@@ -47,5 +47,3 @@ After all of them have successfully downloaded, copy the following:
 - Spectator UI = true
 
 - Follow on kill = false
-
-a
