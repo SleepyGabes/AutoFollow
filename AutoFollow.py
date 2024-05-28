@@ -269,6 +269,8 @@ def main():
     root.geometry("280x280")
     root.mainloop()
     time.sleep(5)
+    activate_window()
+    time.sleep(2)
     # Main loop for the script
     while True:
         if inlobby:
