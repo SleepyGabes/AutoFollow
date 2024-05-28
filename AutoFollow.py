@@ -13,10 +13,9 @@
 # ╚═╝░░╚═╝░╚═════╝░░░░╚═╝░░░░╚════╝░╚═╝░░░░░░╚════╝░╚══════╝╚══════╝░╚════╝░░░░╚═╝░░░╚═╝░
 
 # This program was written by SleepyGabes on GitHub!
-# Version 1.0.5
-# Contributors: Sirvoid, Rexac
+# Version 1.0.6
+# Contributors: Sirvoid, Rexac, Outsider, Wandergrip
 # Credit to mage/sage343 on Discord for the new logo!
-# Credits for troubleshooting to Outsider
 # You can find updates of the mod here!
 # ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 # GitHub: https://github.com/SleepyGabes
@@ -34,9 +33,13 @@ from PIL import Image
 import tkinter as tk
 from tkinter import PhotoImage
 from sys import exit
+import requests
+import json
 
-pytesseract.pytesseract.tesseract_cmd = '_internal/Tesseract-OCR/tesseract.exe'
-last_target = "_internal/last_target.txt"
+pyautogui.PAUSE = 0.5
+pytesseract.pytesseract.tesseract_cmd = 'Tesseract-OCR/tesseract.exe'
+last_target = "last_target.txt"
+
 # Defined slot regions
 slot_regions = [
     (87, 30, 131, 28),
@@ -53,7 +56,6 @@ slot_regions = [
 
 # Beginning statement so that it doesn't automatically check for players at the top.
 inlobby = False
-
 
 def write_file(file_name, content):
     with open(file_name, 'w') as file:
@@ -78,10 +80,10 @@ class MultipleChoiceWindow:
         self.master.title("AutoFollow")
 
         # Change window icon
-        self.master.iconbitmap("_internal/images/af.ico")
+        self.master.iconbitmap("images/af.ico")
 
         # Load the image
-        image_path = "_internal/images/afimg.png"  # Update with your image file path
+        image_path = "images/afimg.png"  # Update with your image file path
         self.image = PhotoImage(file=image_path)
 
         # Create a label widget to display the image
@@ -119,6 +121,7 @@ class MultipleChoiceWindow:
             self.master.destroy()  # Close the main window
             self.input_window = tk.Tk()  # Create a new window for input
             self.input_window.title("Enter Target")
+            self.input_window.geometry("300x100")
             self.input_label = tk.Label(self.input_window, text="Enter the target's name:")
             self.input_label.pack()
             self.input_entry = tk.Entry(self.input_window)
@@ -139,6 +142,7 @@ class MultipleChoiceWindow:
         global last_target
         target = self.input_entry.get()
         write_file(last_target, target)
+        self.input_window.destroy()
 
 
 
@@ -154,25 +158,52 @@ def activate_window():
         pyautogui.click(taskbar)
 
 
-# Defined the join button
-def joinbutton():
-    global inlobby
-    try:
-        joinbutton = pyautogui.locateCenterOnScreen('_internal/images/join.png', confidence=0.85)
-        if joinbutton:
-            pyautogui.moveTo(630, 494)
-            pyautogui.click()
-            time.sleep(5)
-            print("Join button is available right now. Attempting to join lobby.")
-            time.sleep(4)
-            inlobby = True
-        else:
-            print("Join button not available right now.")
-            time.sleep(3)
-    except pyautogui.ImageNotFoundException:
-        print("Join button not found.")
-        time.sleep(3)
+# Function to get a server list from dashlistapi (Outsider Code)
+def get_server_list():
+    response = requests.get('https://dashlistapi.hyperdash.dev/')
+    if response.status_code == 200:
+        return json.loads(response.text).values()
+    else:
+        print("ERROR: UNABLE TO REACH dashlistapi.hyperdash.dev")
 
+# Function for finding the player by the dashlistapi (Outsider Code)
+def get_server_by_player(server_list, player_to_find):
+    for server in server_list:
+        player = get_player_details(server, player_to_find)
+        if(player is not None):
+            print(f"Found {player_to_find} in lobby {server['name']}")
+            return server
+    print(f"ERROR: Player {player_to_find} is not online.")
+
+# Function for Name and Clan Tag (Outsider Code)
+def get_player_details(server, player_to_find):
+    for player in server['players']:
+        if player['name'].lower() == player_to_find.lower():
+            return player
+
+# Function to join server (Outsider)
+def JoinServer(server_name):
+    global inlobby
+    pyautogui.click(1145, 565)  # Server Browser
+    pyautogui.click(x=850, y=645)  # Click Server Search box
+    pyautogui.typewrite(server_name)  # Server search
+    time.sleep(0.5)
+    pyautogui.click(845, 495)  # Click Server in list
+    pyautogui.click(1075, y=710)  # Click Join Game Button
+    wait_for_black_alternation(0, 0)  # Load into lobby
+    inlobby = True
+
+# Function for pause when screen goes black a.k.a Loading Scenes. (Outsider Code)
+def wait_for_black_alternation(x_offset = 0, y_offset = 0):
+    print("Waiting for game to load")
+    while (True):
+        if(pyautogui.pixelMatchesColor(x_offset, y_offset, (0,0,0))):
+            while(True):
+                if(not pyautogui.pixelMatchesColor(x_offset, y_offset, (0,0,0))):
+                    print("Game loaded")
+                    return
+                time.sleep(0.1)
+        time.sleep(0.1)
 
 # Save the slot images
 def save_slot_images():
@@ -243,7 +274,12 @@ def main():
         if inlobby:
             check_for_player()
         if not inlobby:
-            joinbutton()
+            time.sleep(2)
+            server_list = get_server_list()
+            server = get_server_by_player(server_list, target)
+            if server:
+                JoinServer(server["name"])
+            time.sleep(15)
 
 
 if __name__ == "__main__":
