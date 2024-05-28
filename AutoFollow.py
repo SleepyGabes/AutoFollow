@@ -218,7 +218,7 @@ def save_slot_images():
 # Function to read text from image using pytesseract
 def read_text_from_image(image_path):
     image = Image.open(image_path)
-    text = pytesseract.image_to_string(image)
+    text = pytesseract.image_to_string(image, config='--psm 7 --oem 1 -c tessedit_char_whitelist=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789?!.,$_\\\'\\\"" "').strip() # More accurate reading for Tesseract
     print(text)  # Debugging purposes
     return text.strip()
 
