@@ -1,5 +1,5 @@
 ![Image](https://imgur.com/zRomQ6G.png)
-# Looking for our Discord Server?
+# Looking for the Discord Server?
 https://discord.gg/FFGukgu98K
 
 ### Requirements for the script to work correctly:
