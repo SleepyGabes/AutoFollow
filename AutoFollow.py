@@ -14,7 +14,7 @@
 
 # This program was written by SleepyGabes on GitHub!
 # Version 1.0.6
-# Contributors: Sirvoid, Rexac, Outsider, Wandergrip
+# Contributors: Sirvoid, Rexac, Outsider, Wardergrip
 # Credit to mage/sage343 on Discord for the new logo!
 # You can find updates of the mod here!
 # ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
