@@ -5,7 +5,7 @@ from pynput import mouse
 import threading
 
 
-class MouseLoggerGUI:
+class ClickLoggerGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Auto Follows Click Logger")
@@ -73,7 +73,7 @@ class MouseLoggerGUI:
 
 def main():
     root = tk.Tk()
-    gui = MouseLoggerGUI(root)
+    gui = ClickLoggerGUI(root)
     root.mainloop()
 
 if __name__ == "__main__":
