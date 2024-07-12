@@ -13,7 +13,7 @@
 # ╚═╝░░╚═╝░╚═════╝░░░░╚═╝░░░░╚════╝░╚═╝░░░░░░╚════╝░╚══════╝╚══════╝░╚════╝░░░░╚═╝░░░╚═╝░
 
 # This program was written by SleepyGabes on GitHub!
-# Version 1.0.6
+# Version 1.0.7
 # Contributors: Sirvoid, Rexac, Outsider, Wardergrip
 # Credit to mage/sage343 on Discord for the new logo!
 # You can find updates of the mod here!
@@ -24,44 +24,34 @@
 # Thank you, enjoy using AutoFollow!
 # PS: This is my first time coding a script, so excuse my "logical order", or if it doesn't make sense.
 
+import tkinter as tk
+from tkinter import messagebox
+from tkinter import PhotoImage
 import time
 import pyautogui
 import pygetwindow
 import pygetwindow as gw
 import pytesseract
 from PIL import Image
-import tkinter as tk
-from tkinter import PhotoImage
 from sys import exit
 import requests
 import json
+import subprocess
 
-pyautogui.PAUSE = 0.5
-pytesseract.pytesseract.tesseract_cmd = 'Tesseract-OCR/tesseract.exe'
-last_target = "last_target.txt"
+pyautogui.PAUSE = 0.5  # Pause for 0.5 in between interactions
+pytesseract.pytesseract.tesseract_cmd = 'Tesseract-OCR/tesseract.exe' # Tesseract-OCR
+inlobby = False  # Beginning statement so that it doesn't automatically check for players at the top.
 
-# Defined slot regions
-slot_regions = [
-    (87, 30, 131, 28),
-    (229, 30, 131, 28),
-    (371, 30, 131, 28),
-    (513, 30, 131, 28),
-    (655, 30, 131, 28),
-    (1134, 30, 131, 28),
-    (1276, 30, 131, 28),
-    (1418, 30, 131, 28),
-    (1560, 30, 131, 28),
-    (1702, 30, 131, 28)
-]
+with open('config.json', 'r') as file:
+    config = json.load(file)
 
-# Beginning statement so that it doesn't automatically check for players at the top.
-inlobby = False
+slot_regions = config['slot_regions']  # Defined slot regions
+
+p_target = 'p_target.txt'  # Defined p_target
 
 def write_file(file_name, content):
     with open(file_name, 'w') as file:
         file.write(content)
-    # print(f"Content written to '{file_name}' successfully.")
-
 
 def read_file(file_name):
     try:
@@ -72,77 +62,79 @@ def read_file(file_name):
         print(f"File '{file_name}' not found.")
         return None
 
+def open_config():
+    subprocess.Popen(r'notepad config.json')
 
 # Prompt the user to specify their target
-class MultipleChoiceWindow:
-    def __init__(self, master):
-        self.master = master
-        self.master.title("AutoFollow")
+class AFGUI:
+    def __init__(self, AF):
+        self.root = AF
+        self.root.title("Auto Follow")
+        self.root.iconbitmap("images/af.ico")  # Path to icon file
 
-        # Change window icon
-        self.master.iconbitmap("images/af.ico")
+        self.menubar = tk.Menu(self.root)
 
-        # Load the image
-        image_path = "images/afimg.png"  # Update with your image file path
+        self.filemenu = tk.Menu(self.menubar, tearoff=0)
+        self.filemenu.add_command(label="Close", command=self.onquit)
+        self.filemenu.add_command(label="Close Without Question", command=exit)
+        self.filemenu.add_separator()
+
+        self.actionmenu = tk.Menu(self.menubar, tearoff=0)
+        self.actionmenu.add_command(label="Open config file", command=open_config)
+        self.actionmenu.add_separator()
+
+        self.menubar.add_cascade(menu=self.filemenu, label="Options")
+        self.menubar.add_cascade(menu=self.actionmenu, label="Action")
+
+        self.root.config(menu=self.menubar)
+
+        self.label = tk.Label(self.root, text="Welcome to Auto Follow!", font=('Arial', 18))
+        self.label.pack(padx=10, pady=10)
+
+        image_path = "images/afimg.png"  # Path to image file
         self.image = PhotoImage(file=image_path)
-
-        # Create a label widget to display the image
-        self.image_label = tk.Label(master, image=self.image)
+        self.image_label = tk.Label(AF, image=self.image)
         self.image_label.pack()
 
-        self.question_label = tk.Label(master, text="Welcome to AutoFollow!")
-        self.question_label.pack()
-        self.question_label = tk.Label(master, text="What would you like to do?")
-        self.question_label.pack()
+        self.target = tk.Button(self.root, text="Set new target", font=('Arial', 14), command=self.f_target)
+        self.target.pack(padx=5, pady=5)
 
-        self.var = tk.StringVar()
+        self.p_target = tk.Button(self.root, text="Use previous target: " + read_file(p_target), font=('Arial', 14), command=self.p_target)
+        self.p_target.pack(padx=5, pady=5)
 
-        self.radio_button1 = tk.Radiobutton(master, text="Set new target.", variable=self.var, value="1")
-        self.radio_button1.pack(anchor='w')
-        self.var.set("1")
+        self.root.protocol("WM_DELETE_WINDOW", self.onquit)
 
-        target = read_file(last_target)
-        self.radio_button2 = tk.Radiobutton(master, text="Use previous target. " + "(" + target + ")", variable=self.var, value="2")
-        self.radio_button2.pack(anchor='w')
-        self.var.set("2")
-
-        self.radio_button3 = tk.Radiobutton(master, text="Exit AutoFollow", variable=self.var, value="3")
-        self.radio_button3.pack(anchor='w')
-        self.var.set("3")
-
-        self.submit_button = tk.Button(master, text="Submit", command=self.submit_answer)
-        self.submit_button.pack()
-
-    def submit_answer(self):
-        global target
-        global last_target
-        answer = self.var.get()
-        if answer == "1":
-            self.master.destroy()  # Close the main window
-            self.input_window = tk.Tk()  # Create a new window for input
-            self.input_window.title("Enter Target")
-            self.input_window.geometry("300x100")
-            self.input_label = tk.Label(self.input_window, text="Enter the target's name:")
-            self.input_label.pack()
-            self.input_entry = tk.Entry(self.input_window)
-            self.input_entry.pack()
-            self.input_button = tk.Button(self.input_window, text="Submit", command=self.get_input)
-            target = read_file(last_target)
-            self.input_button.pack()
-        elif answer == "2":
-            target = read_file(last_target)
-            self.master.destroy()
-            return target
-        elif answer == "3":
-            self.master.destroy()
+    def onquit(self):
+        if messagebox.askyesno(title="Quit?", message="Do you really want to quit?"):
+            self.root.destroy()
             exit()
+
+    def f_target(self):
+        global target
+        self.input_window = tk.Tk()  # Create a new window for input
+        self.input_window.title("Enter Target")
+        self.input_window.geometry("300x100")
+        self.input_label = tk.Label(self.input_window, text="Enter the target's name:")
+        self.input_label.pack()
+        self.input_entry = tk.Entry(self.input_window)
+        self.input_entry.pack()
+        self.input_button = tk.Button(self.input_window, text="Submit", command=self.get_input)
+        target = read_file(p_target)
+        self.input_button.pack()
+
+    def p_target(self):
+        global target
+        target = read_file(p_target)
+        self.root.destroy()
 
     def get_input(self):
         global target
-        global last_target
+        global p_target
         target = self.input_entry.get()
-        write_file(last_target, target)
+        write_file(p_target, target)
         self.input_window.destroy()
+        self.root.destroy()
+        # self.p_target.config(text="Use previous target: " + target)
 
 
 
@@ -154,7 +146,7 @@ def activate_window():
             window.activate()
             print("Switching to Hyper Dash")
     except pygetwindow.PyGetWindowException:
-        taskbar = pyautogui.locateCenterOnScreen('_internal/images/hd.png', confidence=0.85)
+        taskbar = pyautogui.locateCenterOnScreen('images/hd.png', confidence=0.85)
         pyautogui.click(taskbar)
 
 
@@ -184,13 +176,14 @@ def get_player_details(server, player_to_find):
 # Function to join server (Outsider)
 def JoinServer(server_name):
     global inlobby
-    pyautogui.click(1145, 565)  # Server Browser
-    pyautogui.click(x=850, y=645)  # Click Server Search box
-    pyautogui.typewrite(server_name)  # Server search
+    pyautogui.click(config['server_browser'])  # Server Browser
+    pyautogui.click(config['server_search'])  # Click Server Search box
+    pyautogui.typewrite(server_name)  # Typing Server Name
     time.sleep(0.5)
-    pyautogui.click(845, 495)  # Click Server in list
-    pyautogui.click(1075, y=710)  # Click Join Game Button
+    pyautogui.click(config['server_list'])  # Click Server in list
+    pyautogui.click(config['join_game'])  # Click Join Game Button
     wait_for_black_alternation(0, 0)  # Load into lobby
+    time.sleep(0.5)
     inlobby = True
 
 # Function for pause when screen goes black a.k.a Loading Scenes. (Outsider Code)
@@ -209,10 +202,10 @@ def wait_for_black_alternation(x_offset = 0, y_offset = 0):
 def save_slot_images():
     for i, region in enumerate(slot_regions, start=1):
         slot_img = pyautogui.screenshot(region=region)
-        slot_img.save(f"_internal/images/slot{i % 10}.png")
+        slot_img.save(f"images/slot{i % 10}.png")
         # Convert to grayscale
         slot_img = slot_img.convert('L')
-        slot_img.save(f"_internal/images/slot{i % 10}.png")
+        slot_img.save(f"images/slot{i % 10}.png")
 
 
 # Function to read text from image using pytesseract
@@ -228,11 +221,10 @@ def leaving_lobby():
     global inlobby
     print("Player was not found! Leaving lobby.")
     pyautogui.press("tab")
-    pyautogui.moveTo(645, 318)
+    pyautogui.moveTo(config["leave_game"])
     pyautogui.click()
     inlobby = False
-    # Checking again in
-    time.sleep(10)
+    time.sleep(10)  # Cooldown for checking if the player is online
 
 
 # Function to check for player's name
@@ -246,7 +238,7 @@ def check_for_player():
         save_slot_images()
         # Loop through slots to check for player's name
         for i, region in enumerate(slot_regions, start=1):
-            image_path = f"_internal/images/slot{i % 10}.png"
+            image_path = f"images/slot{i % 10}.png"
             text = read_text_from_image(image_path)
             if player_name in text:
                 pyautogui.press(str(i % 10))
@@ -262,11 +254,10 @@ def check_for_player():
     if try_amount >= 3:
         leaving_lobby()
 
-
 def main():
     root = tk.Tk()
-    app = MultipleChoiceWindow(root)
-    root.geometry("280x280")
+    app = AFGUI(root)
+    root.geometry("300x300")
     root.mainloop()
     time.sleep(5)
     activate_window()
