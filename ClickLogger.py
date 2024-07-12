@@ -71,8 +71,10 @@ class MouseLoggerGUI:
             log_file.write(logs)
         self.log("Logs dumped to console_output.log")
 
-
-if __name__ == "__main__":
+def main():
     root = tk.Tk()
     gui = MouseLoggerGUI(root)
     root.mainloop()
+
+if __name__ == "__main__":
+main():
