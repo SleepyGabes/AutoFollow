@@ -1,6 +1,6 @@
 ![Image](https://imgur.com/zRomQ6G.png)
 
-![Discord](https://img.shields.io/discord/1221883772580921344?style=for-the-badge&logo=discord&color=8A00FF)
+![Discord](https://img.shields.io/discord/1221883772580921344?style=for-the-badge&logo=discord&color=7289DA)
 
 ### Get started
 - If you haven't already downloaded Hyper Dash on your machine head on over to either [Steam](https://store.steampowered.com/app/1386890/Hyper_Dash/) or the [Rift Store](https://www.meta.com/en-gb/experiences/pcvr/2801247513273368/) to start downloading!
