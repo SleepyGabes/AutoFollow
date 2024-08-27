@@ -24,13 +24,14 @@
 
 ## Requirements for the script to work correctly:
 
-- 1920 x 1080p Monitor (Only available resolution.)
+- Preferably 1920 x 1080p Monitor
+> You can change the mouse points for the program and where to read the top scoreboard.
 
-- Oculus/Steam version of Hyper Dash.
+- Oculus or Steam version of Hyper Dash.
 
 - Hyper Dash running fullscreen.
 
-## Spectator Settings
+## Recommended Spectator Settings
 - FOV = 90
 
 - Spectator UI = true
