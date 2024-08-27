@@ -182,12 +182,12 @@ def JoinServer(server_name):
     time.sleep(0.5)
     pyautogui.click(config['server_list'])  # Click Server in list
     pyautogui.click(config['join_game'])  # Click Join Game Button
-    wait_for_black_alternation(0, 0)  # Load into lobby
+    wait_for_black_alternation()  # Load into lobby
     time.sleep(0.5)
     inlobby = True
 
 # Function for pause when screen goes black a.k.a Loading Scenes. (Outsider Code)
-def wait_for_black_alternation(x_offset = 0, y_offset = 0):
+def wait_for_black_alternation(x_offset=1075, y_offset=710):
     print("Waiting for game to load")
     while (True):
         if(pyautogui.pixelMatchesColor(x_offset, y_offset, (0,0,0))):
