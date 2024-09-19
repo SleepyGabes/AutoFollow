@@ -25,7 +25,7 @@
 ## Requirements for the script to work correctly:
 
 - Preferably 1920 x 1080p Monitor
-> You can change the mouse points for the program and where to read the top scoreboard.
+> You can change the mouse points for the program and where to read the top scoreboard in `config.json`.
 
 - Oculus or Steam version of Hyper Dash.
 
