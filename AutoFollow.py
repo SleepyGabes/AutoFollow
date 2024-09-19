@@ -78,6 +78,7 @@ class AFGUI:
         self.filemenu.add_command(label="Open read me file", command=self.open_readme)
         self.filemenu.add_separator()
         self.filemenu.add_command(label="Discord Server", command=self.open_discord_invite)
+        self.filemenu.add_command(label="GitHub Page", command=self.open_github_page)
 
         self.menubar.add_cascade(menu=self.filemenu, label="Options")
 
@@ -129,7 +130,6 @@ class AFGUI:
         write_file(p_target, target)
         self.input_window.destroy()
         self.root.destroy()
-        # self.p_target.config(text="Use previous target: " + target)
 
     def open_config(self):
         subprocess.Popen(r'notepad config.json')
@@ -140,6 +140,9 @@ class AFGUI:
     def open_discord_invite(self):
         webbrowser.open_new('https://discord.gg/FFGukgu98K')
 
+    def open_github_page(self):
+        webbrowser.open_new('https://github.com/SleepyGabes/AutoFollow/tree/master')
+
 # Auto Open class
 class AutoOpen:
     # Check if to auto open Hyper Dash
@@ -147,7 +150,7 @@ class AutoOpen:
     def auto_open_hd(self):
         path_to_hd = config['path_to_hd']
         auto_open_hd = config['auto_open_hd']
-        args = ["-vrmode None", "-novr"]
+        args = ["-vrmode None" + "-novr"]
 
         if auto_open_hd == False:
             print("Auto Open Hyper Dash feature is turned off, check your config.json settings. Continuing script...")
@@ -242,6 +245,7 @@ class AutoFollow:
         skins_ad = config["skins_ad"]
         self.wait_for_black_alternation(x_offset=1075, y_offset=710)
         time.sleep(1.5)
+        print("Closing skins ad.")
         pyautogui.click(skins_ad)
 
     # Save the slot images
