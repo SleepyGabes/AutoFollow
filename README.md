@@ -24,7 +24,7 @@
 
 ## Auto Open Features
 
-If you are planning on Auto Openning Hyper Dash and OBS Studio there are few steps to follow, although these steps are **optional**.
+If you are planning on using the Auto Open Feature for Hyper Dash and OBS Studio there are few steps to follow, although these steps are **optional**.
 
 ### Step 1
 First to automatically open Hyper Dash and OBS Studio, you need to get the path to them. Here are some examples:
