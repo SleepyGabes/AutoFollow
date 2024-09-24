@@ -317,9 +317,9 @@ def main():
     time.sleep(5)
     AutoOpen.auto_open_obs()
     AutoOpen.auto_open_hd()
-    AutoFollow.check_game_loaded()
     time.sleep(10)
     AutoFollow.activate_window()
+    AutoFollow.check_game_loaded()
     time.sleep(2)
     # Main loop for the script
     while True:
