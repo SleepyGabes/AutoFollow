@@ -12,7 +12,7 @@
 # ██║░░██║╚██████╔╝░░░██║░░░╚█████╔╝██║░░░░░╚█████╔╝███████╗███████╗╚█████╔╝░░╚██╔╝░╚██╔╝░
 # ╚═╝░░╚═╝░╚═════╝░░░░╚═╝░░░░╚════╝░╚═╝░░░░░░╚════╝░╚══════╝╚══════╝░╚════╝░░░░╚═╝░░░╚═╝░
 # This program was written by SleepyGabes on GitHub!
-# Version 1.0.8
+# Version 1.0.8a
 # Contributors: Sirvoid, Rexac, Outsider, Wardergrip
 # Credit to mage/sage343 on Discord for the new logo!
 # You can find updates of the mod here!
@@ -38,20 +38,23 @@ import requests
 import json
 import subprocess
 
+folder = ""
 inlobby = False  # Beginning statement so that it doesn't automatically check for players at the top.
 pyautogui.PAUSE = 0.5  # Pause for 0.5 in between interactions
-pytesseract.pytesseract.tesseract_cmd = 'Tesseract-OCR/tesseract.exe'  # Tesseract-OCR
+pytesseract.pytesseract.tesseract_cmd = f'{folder}Tesseract-OCR/tesseract.exe'  # Tesseract-OCR
 
-with open('config.json', 'r') as file:
+with open(f'{folder}config.json', 'r') as file:
     config = json.load(file)
 
 slot_regions = config['slot_regions']  # Defined slot regions
-open_hd = config['path_to_hd']
-p_target = 'p_target.txt'  # Defined p_target
+p_target = f'{folder}p_target.txt'  # Defined p_target
+
 
 def write_file(file_name, content):
     with open(file_name, 'w') as file:
         file.write(content)
+
+
 def read_file(file_name):
     try:
         with open(file_name, 'r') as file:
@@ -61,12 +64,13 @@ def read_file(file_name):
         print(f"File '{file_name}' not found.")
         return None
 
+
 # Auto Follow GUI class
 class AFGUI:
     def __init__(self, AF):
         self.root = AF
         self.root.title("Auto Follow")
-        self.root.iconbitmap("images/af.ico")  # Path to icon file
+        self.root.iconbitmap(f"{folder}images/af.ico")  # Path to icon file
 
         self.menubar = tk.Menu(self.root)
 
@@ -87,7 +91,7 @@ class AFGUI:
         self.label = tk.Label(self.root, text="Welcome to Auto Follow!", font=('Arial', 18))
         self.label.pack(padx=10, pady=10)
 
-        image_path = "images/afimg.png"  # Path to image file
+        image_path = f"{folder}images/afimg.png"  # Path to image file
         self.image = PhotoImage(file=image_path)
         self.image_label = tk.Label(AF, image=self.image)
         self.image_label.pack()
@@ -95,7 +99,8 @@ class AFGUI:
         self.target = tk.Button(self.root, text="Set new target", font=('Arial', 14), command=self.f_target)
         self.target.pack(padx=5, pady=5)
 
-        self.p_target = tk.Button(self.root, text="Use previous target: " + read_file(p_target), font=('Arial', 14), command=self.p_target)
+        self.p_target = tk.Button(self.root, text="Use previous target: " + read_file(p_target), font=('Arial', 14),
+                                  command=self.p_target)
         self.p_target.pack(padx=5, pady=5)
 
         self.root.protocol("WM_DELETE_WINDOW", self.onquit)
@@ -132,16 +137,17 @@ class AFGUI:
         self.root.destroy()
 
     def open_config(self):
-        subprocess.Popen(r'notepad config.json')
+        subprocess.Popen(rf'notepad {folder}config.json')
 
     def open_readme(self):
-        subprocess.Popen(r'notepad README.md')
+        subprocess.Popen(rf'notepad {folder}README.md')
 
     def open_discord_invite(self):
         webbrowser.open_new('https://discord.gg/FFGukgu98K')
 
     def open_github_page(self):
         webbrowser.open_new('https://github.com/SleepyGabes/AutoFollow/tree/master')
+
 
 # Auto Open class
 class AutoOpen:
@@ -150,13 +156,12 @@ class AutoOpen:
     def auto_open_hd(self):
         path_to_hd = config['path_to_hd']
         auto_open_hd = config['auto_open_hd']
-        args = ["-vrmode None" + "-novr"]
 
-        if auto_open_hd == False:
+        if not auto_open_hd:
             print("Auto Open Hyper Dash feature is turned off, check your config.json settings. Continuing script...")
-        elif True:
+        else:
             print("Opening Hyper Dash.")
-            subprocess.Popen([path_to_hd] + args)
+            subprocess.Popen([path_to_hd])
 
     # Check if to auto open OBS Studio
     @classmethod
@@ -164,27 +169,28 @@ class AutoOpen:
         path_to_obs = config['path_to_obs']
         auto_open_obs = config['auto_open_obs']
 
-        if auto_open_obs == False:
+        if not auto_open_obs:
             print("Auto Open OBS feature is turned off, check your config.json settings. Continuing script...")
-        elif True:
+        else:
             print("Opening OBS.")
             subprocess.Popen([path_to_obs])
 
+
 # Auto Follow class
 class AutoFollow:
-    # Switching to Hyper Dash
+    # Function for switching to Hyper Dash
     @classmethod
     def activate_window(self):
         try:
             windows = gw.getWindowsWithTitle("Hyper Dash")
             for window in windows:
-                window.activate()
-                print("Switching to Hyper Dash")
+                if window.title == "Hyper Dash":
+                    window.activate()
+                    print("Switching to Hyper Dash")
         except pygetwindow.PyGetWindowException:
             print("Unable to find to find Hyper Dash window! Stopping program.")
             input()
             exit()
-
 
     # Function to get a server list from dashlistapi (Outsider Code)
     @classmethod
@@ -200,7 +206,7 @@ class AutoFollow:
     def get_server_by_player(self, server_list, player_to_find):
         for server in server_list:
             player = self.get_player_details(server, player_to_find)
-            if(player is not None):
+            if (player is not None):
                 print(f"Found {player_to_find} in lobby {server['name']}")
                 return server
         print(f"ERROR: Player {player_to_find} is not online.")
@@ -230,10 +236,10 @@ class AutoFollow:
     @classmethod
     def wait_for_black_alternation(self, x_offset=1075, y_offset=710):
         print("Waiting for game to load")
-        while (True):
-            if(pyautogui.pixelMatchesColor(x_offset, y_offset, (0,0,0))):
-                while(True):
-                    if(not pyautogui.pixelMatchesColor(x_offset, y_offset, (0,0,0))):
+        while True:
+            if pyautogui.pixelMatchesColor(x_offset, y_offset, (0, 0, 0)):
+                while True:
+                    if not pyautogui.pixelMatchesColor(x_offset, y_offset, (0, 0, 0)):
                         print("Game loaded")
                         return
                     time.sleep(0.1)
@@ -242,11 +248,11 @@ class AutoFollow:
     # Check's to see if the game loaded
     @classmethod
     def check_game_loaded(self):
-        skins_ad = config["skins_ad"]
-        self.wait_for_black_alternation(x_offset=1075, y_offset=710)
-        time.sleep(1.5)
-        print("Closing skins ad.")
-        pyautogui.click(skins_ad)
+        if not config["auto_open_hd"]:
+            print("Checking if game loaded feature is off.")
+        else:
+            self.wait_for_black_alternation(x_offset=1075, y_offset=710)
+            time.sleep(1.5)
 
     # Save the slot images
     @classmethod
@@ -255,17 +261,16 @@ class AutoFollow:
             slot_img = pyautogui.screenshot(region=region)
             # Convert to grayscale
             slot_img = slot_img.convert('L')
-            slot_img.save(f"images/slot{i % 10}.png")
-
+            slot_img.save(f"{folder}images/slot{i % 10}.png")
 
     # Function to read text from image using pytesseract
     @classmethod
     def read_text_from_image(self, image_path):
         image = Image.open(image_path)
-        text = pytesseract.image_to_string(image, config='--psm 7 --oem 1 -c tessedit_char_whitelist=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789?!.,$_\\\'\\\"" "').strip() # More accurate reading for Tesseract
+        text = pytesseract.image_to_string(image,
+                                           config='--psm 7 --oem 1 -c tessedit_char_whitelist=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789?!.,$_\\\'\\\"" "').strip()  # More accurate reading for Tesseract
         print(text)  # Debugging purposes
         return text.strip()
-
 
     # Function to leave the lobby
     @classmethod
@@ -277,7 +282,6 @@ class AutoFollow:
         pyautogui.click()
         inlobby = False
         time.sleep(10)  # Cooldown for checking if the player is online
-
 
     # Function to check for player's name
     @classmethod
@@ -292,7 +296,7 @@ class AutoFollow:
             self.save_slot_images()
             # Loop through slots to check for player's name
             for i, region in enumerate(slot_regions, start=1):
-                image_path = f"images/slot{i % 10}.png"
+                image_path = f"{folder}images/slot{i % 10}.png"
                 text = self.read_text_from_image(image_path)
                 if player_name in text:
                     pyautogui.press(str(i % 10))
@@ -302,11 +306,13 @@ class AutoFollow:
                 else:
                     try_amount += 1
             try_amount -= 9
-            print(f"Haven't found player yet. The try amount is: {try_amount}. At {try_int} the drone will leave the lobby.")
+            print(
+                f"Haven't found player yet. The try amount is: {try_amount}. At {try_int} the drone will leave the lobby.")
             time.sleep(2)
         # If player not found within 10 seconds
         if try_amount >= try_int:
             self.leaving_lobby()
+
 
 # Main operation for Auto Follow
 def main():
