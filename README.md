@@ -22,16 +22,32 @@
 
 - Happy Dashing!
 
+## Requirements for the script to work correctly:
+
+- Preferably 1920 x 1080p Monitor
+> You can change the mouse points for the program and where to read the top scoreboard in `config.json` with the other tool `ClickLogger.exe`.
+
+- Oculus or Steam version of Hyper Dash.
+
+- Hyper Dash running fullscreen.
+
+## Recommended Spectator Settings
+- FOV = 90
+
+- Spectator UI = true
+
+- Follow on kill = false
+
 ## Auto Open Features
 
 If you are planning on using the Auto Open Feature for Hyper Dash and OBS Studio there are few steps to follow, although these steps are **optional**.
 
 ### Step 1
 First to automatically open Hyper Dash and OBS Studio, you need to get the path to them. Here are some examples:
-- Hyper Dash path `C:\Oculus Downloads\Software\triangle-factory-hyper-dash\HyperDash.exe`
+- Hyper Dash path `C:\Oculus Downloads\Software\triangle-factory-hyper-dash\hd_launch.bat`
 - OBS Studio path `C:\OBS\obs-studio\bin\64bit\obs_launch.bat`
 
-> The reason why we aren't using the `obs64.exe` is because you will get errors so creating a custom `.bat` file will help with resolving this issue.
+> The reason why we aren't using the `obs64.exe` and `HyperDash.exe` is because of different errors so creating a custom `.bat` file will help with resolving this issue.
 
 There are many tutorials online on how to get folder paths, so just follow one of them.
 
@@ -49,28 +65,31 @@ Second is creating the `.bat` file for OBS Studio.
 
 > Note you can add Launch Parameters to OBS, for example using this parameter: `--minimize-to-tray` will minimize OBS to tray, to find out more about OBS Studio Launch Parameteres click [here](https://obsproject.com/kb/launch-parameters).
 
-Now after you've done that, you need to change the file type of the Text Document from `.txt` to `.bat`, this can be done through properties or if you have **File name extensions** enabled you can just change it by renaming the Text Document.
+Now after you've done that, you need to change the file type of the Text Document from `.txt` to `.bat`, this can be done through properties or if you have **File name extensions** enabled you can just change it by renaming the Text Document. You can also change the file name to something like: `obs_launch.bat`.
 
 ### Step 3
+Similar to **Step 2** we are going to create a `.bat` file for Hyper Dash.
+- Repeat the same steps of creating a **Text Document**.
+- Paste the following into the **Text Document** on each new line.
+
+`@echo off` - Turns off the console.
+
+`cd /d "C:\Oculus Downloads\Software\triangle-factory-hyper-dash"` - Path to the Hyper Dash folder where the `.exe` is located.
+
+`start HyperDash.exe -vrmode None -novr` - Starts Hyper Dash with parameters for spectator.
+
+### Step 4
 Third is pasting the correct paths for OBS and Hyper Dash to `config.json`, and changing both `auto_open_hd`, `auto_open_obs` to `true`.
 That's it! You successfuly enabled the Auto Open Features!
+One important thing to mention, when copying paths into the `config.json`, the paths should look something like this:
 
+- `"E:\\Oculus Downloads\\Software\\triangle-factory-hyper-dash\\hd_launch.bat"`
 
-## Requirements for the script to work correctly:
+OR
 
-- Preferably 1920 x 1080p Monitor
-> You can change the mouse points for the program and where to read the top scoreboard in `config.json` with the other tool `ClickLogger.exe`.
+- `"E:/Oculus Downloads/Software/triangle-factory-hyper-dash/hd_launch.bat"`
 
-- Oculus or Steam version of Hyper Dash.
-
-- Hyper Dash running fullscreen.
-
-## Recommended Spectator Settings
-- FOV = 90
-
-- Spectator UI = true
-
-- Follow on kill = false
+This is because Python has a specific way of reading paths.
 
 # Note
 Me and my contributors will not be liable for any malicious use, misuse, or any other inappropriate actions taken with this program. We expect everyone to use this program for the intended purpose of spectating themselves, and that it isn't used for spying other players or other malicious reasons. Thank you.
