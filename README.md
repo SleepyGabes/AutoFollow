@@ -25,7 +25,7 @@
 ## Requirements for the script to work correctly:
 
 - Preferably 1920 x 1080p Monitor
-> You can change the mouse points for the program and where to read the top scoreboard in `config.json` with the other tool `ClickLogger.exe`.
+> You can change the mouse points for the program and where to read the top scoreboard and other positions for the mouse in `config.json` with the other tool `ClickLogger.exe`.
 
 - Oculus or Steam version of Hyper Dash.
 
